@@ -1,0 +1,42 @@
+doctype html
+html(lang='en')
+  head
+    meta(charset='utf-8')
+    meta(name='viewport', content='width=device-width, initial-scale=1, shrink-to-fit=no')
+    title Login Form
+    meta(charset='UTF-8')
+    link(href='client/login.css', rel='stylesheet')
+  body
+    form#loginform
+      label(for='username') Username:
+      input#username(type='text', name='username')
+      label(for='password') Password:
+      input#password(type='password', name='password')
+      input#login-button(type='submit', value='Log In')
+    p#error Login Error: Try Again
+    script.
+      const loginButton = document.getElementById('login-button');
+      loginButton.addEventListener('click', function(event) {
+      event.preventDefault();
+      const username = document.getElementById('username').value;
+      const password = document.getElementById('password').value;
+      fetch('/loginPOST', {
+      method: 'POST',
+      headers: {
+      'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ username: username, password: password })
+      })
+      .then((response) => response.json())
+      .then((data) => {
+      console.log(JSON.stringify(data));
+      if (data.status === 'success') {
+      window.location.href = '/getSchedule';
+      } else {
+      document.getElementById('error').style.display = 'block';
+      document.getElementById('password').value = '';
+      document.getElementById('username').value = '';
+      }
+      })
+      .catch((error) => console.error(error));
+      });
